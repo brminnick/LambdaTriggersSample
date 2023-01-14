@@ -4,10 +4,9 @@ using Amazon.Lambda.S3Events;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.S3;
 
-[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 namespace LambdaTriggers;
 
-public sealed class Function : IDisposable
+public sealed class GenerateThumbnail : IDisposable
 {
 	static readonly IAmazonS3 _s3Client = new AmazonS3Client();
 
@@ -22,7 +21,7 @@ public sealed class Function : IDisposable
 		try
 		{
 			var response = await _s3Client.GetObjectMetadataAsync(s3Event.Bucket.Name, s3Event.Object.Key);
-			context.Logger.LogInformation(response.Headers.ContentType);
+			context.Logger.LogInformation($"Content Type: {response.Headers.ContentType}");
 			return response.Headers.ContentType;
 		}
 		catch (Exception e)
