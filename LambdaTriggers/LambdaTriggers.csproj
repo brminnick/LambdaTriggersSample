@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -31,6 +31,7 @@
 		<PackageReference Include="Amazon.Lambda.Core" Version="2.1.0" />
 		<PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.3.0" />
 		<PackageReference Include="Amazon.Lambda.S3Events" Version="3.0.0" />
-		<PackageReference Include="AWSSDK.S3" Version="3.7.101.52" />
+		<PackageReference Include="Amazon.Lambda.SQSEvents" Version="2.1.0" />
+		<PackageReference Include="AWSSDK.S3" Version="3.7.101.53" />
 	</ItemGroup>
 </Project>
