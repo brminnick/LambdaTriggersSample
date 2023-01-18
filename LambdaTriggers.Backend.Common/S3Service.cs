@@ -4,7 +4,7 @@ using Amazon.Lambda.Core;
 using Amazon.S3;
 using Amazon.S3.Model;
 
-namespace LambdaTriggers.Shared;
+namespace LambdaTriggers.Backend.Common;
 
 public  static class S3Service
 {

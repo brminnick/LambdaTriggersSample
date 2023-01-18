@@ -31,6 +31,7 @@
     <PackageReference Include="HttpMultipartParser" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LambdaTriggers.S3\LambdaTriggers.Common.csproj" />
+    <ProjectReference Include="..\LambdaTriggers.Backend.Common\LambdaTriggers.Backend.Common.csproj" />
+    <ProjectReference Include="..\LambdaTriggers.Common\LambdaTriggers.Common.csproj" />
   </ItemGroup>
 </Project>

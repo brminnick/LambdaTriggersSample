@@ -31,6 +31,6 @@
 		<PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\LambdaTriggers.S3\LambdaTriggers.Common.csproj" />
+	  <ProjectReference Include="..\LambdaTriggers.Backend.Common\LambdaTriggers.Backend.Common.csproj" />
 	</ItemGroup>
 </Project>

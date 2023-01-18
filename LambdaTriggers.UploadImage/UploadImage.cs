@@ -6,18 +6,19 @@ using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.S3;
 using HttpMultipartParser;
-using LambdaTriggers.Shared;
+using LambdaTriggers.Backend.Common;
+using LambdaTriggers.Common;
 
 namespace LambdaTriggers.UploadImage;
 
 public class UploadImage
 {
-	const string _imageFileNameQueryParameter = "filename";
+	
 	static readonly IAmazonS3 _s3Client = new AmazonS3Client();
 
 	public static async Task<APIGatewayHttpApiV2ProxyResponse> FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
 	{
-		if (!request.QueryStringParameters.TryGetValue(_imageFileNameQueryParameter, out var filename)
+		if (!request.QueryStringParameters.TryGetValue(Constants.ImageFileNameQueryParameter, out var filename)
 			|| filename is null)
 		{
 			return new APIGatewayHttpApiV2ProxyResponse
@@ -25,7 +26,7 @@ public class UploadImage
 				StatusCode = (int)HttpStatusCode.BadRequest,
 				Body = request.QueryStringParameters.Any()
 						? $"Invalid Request. Query Parameter, {request.QueryStringParameters.First().Value}, Not Supported"
-						: $"Invalid Request. Missing Query Parameter {_imageFileNameQueryParameter}"
+						: $"Invalid Request. Missing Query Parameter {Constants.ImageFileNameQueryParameter}"
 			};
 		}
 
