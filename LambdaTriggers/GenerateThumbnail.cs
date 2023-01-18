@@ -5,10 +5,10 @@ using Amazon.Lambda.S3Events;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.S3;
 using Amazon.S3.Model;
+using LambdaTriggers.Shared;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
-[assembly: LambdaSerializer(typeof(DefaultLambdaJsonSerializer))]
 namespace LambdaTriggers;
 
 public sealed class GenerateThumbnail : IDisposable
@@ -17,9 +17,10 @@ public sealed class GenerateThumbnail : IDisposable
 
 	public static async Task FunctionHandler(S3Event evnt, ILambdaContext context)
 	{
+		const string thumbnailSuffix = "_thumbnail.png";
 
 		var s3Event = evnt.Records?[0].S3;
-		if (s3Event is null || s3Event.Object.Key.Contains("_thumbnail.png"))
+		if (s3Event is null || s3Event.Object.Key.EndsWith(thumbnailSuffix))
 			return;
 
 		try
@@ -36,7 +37,9 @@ public sealed class GenerateThumbnail : IDisposable
 
 			using var thumbnail = await GetPNGThumbnail(imageMemoryStream).ConfigureAwait(false);
 
-			await UploadImageToS3(s3Event.Bucket.Name, s3Event.Object.Key + "_thumbnail.png", thumbnail, context.Logger).ConfigureAwait(false);
+			var thumbnailName = Path.GetFileNameWithoutExtension(s3Event.Object.Key) + thumbnailSuffix;
+
+			await S3Service.UploadContentToS3(_s3Client, s3Event.Bucket.Name, thumbnailName, thumbnail, context.Logger).ConfigureAwait(false);
 		}
 		catch (Exception e)
 		{
@@ -68,25 +71,6 @@ public sealed class GenerateThumbnail : IDisposable
 		await image.SaveAsPngAsync(outputMemoryStream).ConfigureAwait(false);
 
 		return outputMemoryStream;
-	}
-
-	static async Task UploadImageToS3(string bucket, string key, MemoryStream content, ILambdaLogger logger)
-	{
-		var request = new PutObjectRequest
-		{
-			InputStream = content,
-			BucketName = bucket,
-			Key = key
-		};
-
-		logger.LogInformation($"Uploading object to S3...");
-
-		var response = await _s3Client.PutObjectAsync(request).ConfigureAwait(false);
-
-		if (response.HttpStatusCode is HttpStatusCode.OK)
-			logger.LogInformation($"Upload suceeded");
-		else
-			throw new HttpRequestException($"{nameof(IAmazonS3.PutObjectAsync)} Failed: {response.HttpStatusCode}");
 	}
 
 	static Task Main(string[] args) =>
