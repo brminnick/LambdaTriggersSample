@@ -32,7 +32,7 @@ public  static class S3Service
 		logger.LogInformation($"Uploading object to S3...");
 
 		var putObjectResponse = await s3Client.PutObjectAsync(request).ConfigureAwait(false);
-		var fileUrl = s3Client.GeneratePreSignedURL(bucket, key, DateTime.MaxValue, null);
+		var fileUrl = s3Client.GeneratePreSignedURL(bucket, key, DateTime.UtcNow.AddYears(1), null);
 
 		if (putObjectResponse.HttpStatusCode is not HttpStatusCode.OK)
 			throw new HttpRequestException($"{nameof(IAmazonS3.PutObjectAsync)} Failed: {putObjectResponse.HttpStatusCode}");

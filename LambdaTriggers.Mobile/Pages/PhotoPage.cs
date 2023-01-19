@@ -21,6 +21,7 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 			{
 				new Border
 				{
+					StrokeThickness = 2,
 					Content = new Grid
 					{
 						Children =
@@ -50,17 +51,18 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 
 				new Border
 				{
+					StrokeThickness = 2,
 					Content = new Grid
 					{
-							new Label()
-								.Row(0)
-								.Center()
-								.Text("Thumbnail")
-								.TextCenter(),
+						new Label()
+							.Row(0)
+							.Center()
+							.Text("Thumbnail")
+							.TextCenter(),
 
-							new Image()
-								.Row(0)
-								.Bind(Image.SourceProperty, nameof(PhotoViewModel.ThumbnailPhotoUri), convert: (Uri? imageUri) => imageUri is not null ? ImageSource.FromUri(imageUri) : null),
+						new Image()
+							.Row(0)
+							.Bind(Image.SourceProperty, nameof(PhotoViewModel.ThumbnailPhotoUri), convert: (Uri? imageUri) => imageUri is not null ? ImageSource.FromUri(imageUri) : null),
 					}
 				}.Row(Row.Thumbail)
 			}

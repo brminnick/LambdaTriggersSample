@@ -61,9 +61,11 @@ partial class PhotoViewModel : BaseViewModel
 				return;
 			}
 
+			var filename = Guid.NewGuid().ToString();
+
 			var photo = await _dispatcher.DispatchAsync(() => _mediapicker.CapturePhotoAsync(new()
 			{
-				Title = Guid.NewGuid().ToString()
+				Title = filename
 			})).ConfigureAwait(false);
 
 			if (photo is null)

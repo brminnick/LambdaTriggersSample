@@ -18,15 +18,16 @@ public class UploadImage
 
 	public static async Task<APIGatewayHttpApiV2ProxyResponse> FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
 	{
-		if (!request.QueryStringParameters.TryGetValue(Constants.ImageFileNameQueryParameter, out var filename)
+		if (request.QueryStringParameters is null
+			|| !request.QueryStringParameters.TryGetValue(Constants.ImageFileNameQueryParameter, out var filename)
 			|| filename is null)
 		{
 			return new APIGatewayHttpApiV2ProxyResponse
 			{
 				StatusCode = (int)HttpStatusCode.BadRequest,
-				Body = request.QueryStringParameters.Any()
-						? $"Invalid Request. Query Parameter, {request.QueryStringParameters.First().Value}, Not Supported"
-						: $"Invalid Request. Missing Query Parameter {Constants.ImageFileNameQueryParameter}"
+				Body = request.QueryStringParameters?.Any() is true
+						? $"Invalid Request. Query Parameter, \"{request.QueryStringParameters.First().Value}\", Not Supported"
+						: $"Invalid Request. Missing Query Parameter \"{Constants.ImageFileNameQueryParameter}\""
 			};
 		}
 
@@ -36,7 +37,7 @@ public class UploadImage
 			var image = multipartFormParser.Files[0].Data;
 
 			var photoUri = await S3Service.UploadContentToS3(_s3Client, S3Service.BucketName, filename, image, context.Logger);
-			context.Logger.LogInformation("Saved Photo to Blob Storage");
+			context.Logger.LogInformation("Saved Photo to S3");
 
 			return new APIGatewayHttpApiV2ProxyResponse
 			{
