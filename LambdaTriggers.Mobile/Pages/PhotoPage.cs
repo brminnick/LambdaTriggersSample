@@ -5,8 +5,10 @@ namespace LambdaTriggers.Mobile;
 
 class PhotoPage : BaseContentPage<PhotoViewModel>
 {
-	public PhotoPage(PhotoViewModel uploadPhotoViewModel) : base(uploadPhotoViewModel, "Photo Page")
+	public PhotoPage(PhotoViewModel photoViewModel) : base(photoViewModel, "Photo Page")
 	{
+		photoViewModel.Error += HandleError;
+
 		Content = new Grid
 		{
 			RowDefinitions = Rows.Define(
@@ -25,7 +27,9 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 						{
 							new Label()
 								.Row(0)
-								.Text("Captured Photo"),
+								.Center()
+								.Text("Captured Photo")
+								.TextCenter(),
 
 							new Image()
 								.Row(0)
@@ -50,11 +54,13 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 					{
 							new Label()
 								.Row(0)
-								.Text("Thumbnail"),
+								.Center()
+								.Text("Thumbnail")
+								.TextCenter(),
 
 							new Image()
 								.Row(0)
-								.Bind(Image.SourceProperty, nameof(PhotoViewModel.ThumbnailPhotoUri), convert: (Uri? imageUri) => ImageSource.FromUri(imageUri)),
+								.Bind(Image.SourceProperty, nameof(PhotoViewModel.ThumbnailPhotoUri), convert: (Uri? imageUri) => imageUri is not null ? ImageSource.FromUri(imageUri) : null),
 					}
 				}.Row(Row.Thumbail)
 			}
@@ -62,4 +68,6 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 	}
 
 	enum Row { CapturedPhoto, UploadButton, ActivityIndicator, Thumbail }
+
+	void HandleError(object? sender, string message) => Dispatcher.DispatchAsync(() => DisplayAlert("Error", message, "OK"));
 }

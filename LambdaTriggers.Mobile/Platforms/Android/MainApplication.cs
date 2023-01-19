@@ -2,6 +2,7 @@
 using Android.Runtime;
 
 namespace LambdaTriggers.Mobile;
+
 [Application]
 public class MainApplication : MauiApplication
 {
