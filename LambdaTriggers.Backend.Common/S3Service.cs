@@ -3,10 +3,11 @@ using System.Text.Json;
 using Amazon.Lambda.Core;
 using Amazon.S3;
 using Amazon.S3.Model;
+using LambdaTriggers.Common;
 
 namespace LambdaTriggers.Backend.Common;
 
-public  static class S3Service
+public static class S3Service
 {
 	public const string BucketName = "lambdatriggersbucket";
 
@@ -22,9 +23,9 @@ public  static class S3Service
 			},
 			_ => new PutObjectRequest
 			{
-				ContentType= "application/json",
+				ContentType = "application/json",
 				ContentBody = JsonSerializer.Serialize(content),
-				BucketName= bucket,
+				BucketName = bucket,
 				Key = key
 			}
 		};
@@ -41,5 +42,24 @@ public  static class S3Service
 		logger.LogInformation($"{nameof(putObjectResponse.ChecksumSHA256)}: {putObjectResponse.ChecksumSHA256}");
 
 		return new Uri(fileUrl);
+	}
+
+	public static string GenerateThumbnailFilename(in string fileName) => Path.GetFileNameWithoutExtension(fileName) + Constants.ThumbnailSuffix;
+
+	public static async Task<Uri?> GetFileUri(IAmazonS3 s3Client, string bucket, string key, ILambdaLogger lambdaLogger, DateTime? expirationDate = default)
+	{
+		expirationDate ??= DateTime.UtcNow.AddYears(1);
+
+		lambdaLogger.LogInformation("Creating Presigned URL...");
+
+		var s3Object = await s3Client.GetObjectAsync(bucket, key).ConfigureAwait(false);
+		if (s3Object is null)
+			return null;
+
+		var url = s3Client.GeneratePreSignedURL(bucket, key, expirationDate.Value, null);
+
+		lambdaLogger.LogInformation($"Presigned URL Expiring on {expirationDate:MMMM dd, yyyy} Generated: {url}");
+
+		return new Uri(url);
 	}
 }

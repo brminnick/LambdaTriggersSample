@@ -27,9 +27,6 @@
     <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="68.2.0.9" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HttpMultipartParser" Version="8.0.0" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\LambdaTriggers.Backend.Common\LambdaTriggers.Backend.Common.csproj" />
     <ProjectReference Include="..\LambdaTriggers.Common\LambdaTriggers.Common.csproj" />
   </ItemGroup>

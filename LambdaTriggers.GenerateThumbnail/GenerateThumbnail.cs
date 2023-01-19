@@ -4,12 +4,12 @@ using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.S3Events;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.S3;
-using Amazon.S3.Model;
-using LambdaTriggers.Shared;
+using LambdaTriggers.Common;
+using LambdaTriggers.Backend.Common;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
-namespace LambdaTriggers;
+namespace LambdaTriggers.GenerateThumbnail;
 
 public sealed class GenerateThumbnail : IDisposable
 {
@@ -17,10 +17,8 @@ public sealed class GenerateThumbnail : IDisposable
 
 	public static async Task FunctionHandler(S3Event evnt, ILambdaContext context)
 	{
-		const string thumbnailSuffix = "_thumbnail.png";
-
 		var s3Event = evnt.Records?[0].S3;
-		if (s3Event is null || s3Event.Object.Key.EndsWith(thumbnailSuffix))
+		if (s3Event is null || s3Event.Object.Key.EndsWith(Constants.ThumbnailSuffix))
 			return;
 
 		try
@@ -37,7 +35,7 @@ public sealed class GenerateThumbnail : IDisposable
 
 			using var thumbnail = await GetPNGThumbnail(imageMemoryStream).ConfigureAwait(false);
 
-			var thumbnailName = Path.GetFileNameWithoutExtension(s3Event.Object.Key) + thumbnailSuffix;
+			var thumbnailName = S3Service.GenerateThumbnailFilename(s3Event.Object.Key);
 
 			await S3Service.UploadContentToS3(_s3Client, s3Event.Bucket.Name, thumbnailName, thumbnail, context.Logger).ConfigureAwait(false);
 		}
