@@ -4,8 +4,8 @@ using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.S3Events;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.S3;
-using LambdaTriggers.Common;
 using LambdaTriggers.Backend.Common;
+using LambdaTriggers.Common;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 

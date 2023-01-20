@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Text.Json;
 using Amazon.Lambda.Core;
 using Amazon.S3;
@@ -52,8 +53,9 @@ public static class S3Service
 
 		lambdaLogger.LogInformation("Creating Presigned URL...");
 
-		var s3Object = await s3Client.GetObjectAsync(bucket, key).ConfigureAwait(false);
-		if (s3Object is null)
+
+		var doesFileExist = await DoesFileExist(bucket, key, s3Client, lambdaLogger).ConfigureAwait(false);
+		if (!doesFileExist)
 			return null;
 
 		var url = s3Client.GeneratePreSignedURL(bucket, key, expirationDate.Value, null);
@@ -61,5 +63,19 @@ public static class S3Service
 		lambdaLogger.LogInformation($"Presigned URL Expiring on {expirationDate:MMMM dd, yyyy} Generated: {url}");
 
 		return new Uri(url);
+	}
+
+	static async Task<bool> DoesFileExist(string bucket, string key, IAmazonS3 s3Client, ILambdaLogger lambdaLogger)
+	{
+		try
+		{
+			var response = await s3Client.GetObjectAsync(bucket, key).ConfigureAwait(false);
+			return response is not null;
+		}
+		catch (AmazonS3Exception e)
+		{
+			lambdaLogger.LogError(e.Message);
+			return false;
+		}
 	}
 }

@@ -8,7 +8,7 @@ partial class PhotoViewModel : BaseViewModel
 	readonly IMediaPicker _mediapicker;
 	readonly PhotosApiService _photosApiService;
 
-	[ObservableProperty]
+	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(UploadPhotoCommand))]
 	bool _isCapturingAndUploadingPhoto;
 
 	[ObservableProperty]
@@ -30,9 +30,13 @@ partial class PhotoViewModel : BaseViewModel
 		remove => _eventManager.RemoveEventHandler(value);
 	}
 
-	[RelayCommand]
+	bool CanUploadPhotoExecute => !IsCapturingAndUploadingPhoto;
+
+	[RelayCommand(CanExecute = nameof(CanUploadPhotoExecute))]
 	async Task UploadPhoto(CancellationToken token)
 	{
+		CapturedPhoto = null;
+		ThumbnailPhotoUri = null;
 		IsCapturingAndUploadingPhoto = true;
 
 		try
@@ -61,11 +65,9 @@ partial class PhotoViewModel : BaseViewModel
 				return;
 			}
 
-			var filename = Guid.NewGuid().ToString();
-
 			var photo = await _dispatcher.DispatchAsync(() => _mediapicker.CapturePhotoAsync(new()
 			{
-				Title = filename
+				Title = Guid.NewGuid().ToString()
 			})).ConfigureAwait(false);
 
 			if (photo is null)
@@ -73,7 +75,9 @@ partial class PhotoViewModel : BaseViewModel
 
 			CapturedPhoto = await photo.OpenReadAsync().ConfigureAwait(false);
 
-			ThumbnailPhotoUri = await _photosApiService.UploadPhoto(photo.FileName, photo, token).ConfigureAwait(false);
+			await _photosApiService.UploadPhoto(photo.FileName, photo, token).ConfigureAwait(false);
+
+			ThumbnailPhotoUri = await _photosApiService.GetThumbnailUri(photo.FileName, token).ConfigureAwait(false);
 		}
 		catch (Exception e)
 		{

@@ -14,7 +14,7 @@ public sealed class GetThumbnail : IDisposable
 {
 	static readonly IAmazonS3 _s3Client = new AmazonS3Client();
 
-	public static APIGatewayHttpApiV2ProxyResponse FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
+	public static async Task<APIGatewayHttpApiV2ProxyResponse> FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
 	{
 		if (request.QueryStringParameters is null
 			|| !request.QueryStringParameters.TryGetValue(Constants.ImageFileNameQueryParameter, out var filename)
@@ -30,7 +30,7 @@ public sealed class GetThumbnail : IDisposable
 		}
 
 		var thumbnailFileName = S3Service.GenerateThumbnailFilename(filename);
-		var thumbnailUrl = S3Service.GetFileUri(_s3Client, S3Service.BucketName, thumbnailFileName, context.Logger);
+		var thumbnailUrl = await S3Service.GetFileUri(_s3Client, S3Service.BucketName, thumbnailFileName, context.Logger).ConfigureAwait(false);
 
 		return thumbnailUrl switch
 		{

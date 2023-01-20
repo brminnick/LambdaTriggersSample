@@ -1,7 +1,9 @@
-﻿using CommunityToolkit.Maui;
+﻿using System.Net;
+using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using LambdaTriggers.Common;
 using Polly;
+using Polly.Extensions.Http;
 using Refit;
 
 namespace LambdaTriggers.Mobile;
@@ -22,9 +24,13 @@ public class MauiProgram
 		builder.Services.AddSingleton<App>();
 		builder.Services.AddSingleton(MediaPicker.Default);
 		builder.Services.AddSingleton<PhotosApiService>();
-		builder.Services.AddRefitClient<IPhotosAPI>()
-							.ConfigureHttpClient(client => client.BaseAddress = new Uri(Constants.UploadImageApiUrl))
+		builder.Services.AddRefitClient<IUploadPhotosAPI>()
+							.ConfigureHttpClient(client => client.BaseAddress = new Uri(Constants.UploadPhotoApiUrl))
 							.AddTransientHttpErrorPolicy(builder => builder.WaitAndRetryAsync(3, sleepDurationProvider));
+
+		builder.Services.AddRefitClient<IGetThumbnailApi>()
+							.ConfigureHttpClient(client => client.BaseAddress = new Uri(Constants.GetThumbnailApiUrl))
+							.AddTransientHttpErrorPolicy(builder => builder.OrResult(response => response.StatusCode is HttpStatusCode.NotFound).WaitAndRetryAsync(3, sleepDurationProvider));
 
 		// Pages + View Models
 		builder.Services.AddTransient<PhotoPage, PhotoViewModel>();

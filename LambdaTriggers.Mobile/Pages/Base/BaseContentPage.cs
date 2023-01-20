@@ -6,6 +6,7 @@ abstract class BaseContentPage<T> : ContentPage where T : BaseViewModel
 	{
 		base.BindingContext = viewModel;
 
+		Padding = 12;
 		Title = pageTitle;
 	}
 

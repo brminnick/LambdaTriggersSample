@@ -44,7 +44,7 @@ public class UploadImage
 				Body = JsonSerializer.Serialize(photoUri)
 			};
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			context.Logger.LogError(ex.Message);
 
