@@ -1,6 +1,6 @@
 # Lambda Triggers Sample
 
-A sample app demonstrating an end-to-end mobile workflow using .NET MAUI + AWS Lambda in C#.
+A sample app demonstrating an end-to-end mobile workflow using .NET MAUI + Serverless AWS Lambda in C#.
 
 This sample demonstrates how to use AWS Lambda's HTTP API Gateway Triggers + S3 Triggers to automatically generate thumbnails of an uploaded image from a mobile app.
 
