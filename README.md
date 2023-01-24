@@ -1,4 +1,4 @@
-# LambdaTriggersSample
+# Lambda Triggers Sample
 
 A sample app demonstrating an end-to-end mobile workflow using .NET MAUI + AWS Lambda in C#.
 
