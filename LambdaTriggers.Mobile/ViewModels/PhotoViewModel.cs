@@ -37,7 +37,6 @@ partial class PhotoViewModel : BaseViewModel
 	{
 		CapturedPhoto = null;
 		ThumbnailPhotoUri = null;
-		IsCapturingAndUploadingPhoto = true;
 
 		try
 		{
@@ -65,6 +64,8 @@ partial class PhotoViewModel : BaseViewModel
 				return;
 			}
 
+			IsCapturingAndUploadingPhoto = true;
+
 			var photo = await _dispatcher.DispatchAsync(() => _mediapicker.CapturePhotoAsync(new()
 			{
 				Title = Guid.NewGuid().ToString()
@@ -73,11 +74,14 @@ partial class PhotoViewModel : BaseViewModel
 			if (photo is null)
 				return;
 
+			ThumbnailPhotoUri = null;
 			CapturedPhoto = await photo.OpenReadAsync().ConfigureAwait(false);
 
 			await _photosApiService.UploadPhoto(photo.FileName, photo, token).ConfigureAwait(false);
 
 			ThumbnailPhotoUri = await _photosApiService.GetThumbnailUri(photo.FileName, token).ConfigureAwait(false);
+
+			await Task.Delay(TimeSpan.FromSeconds(2), token).ConfigureAwait(false);
 		}
 		catch (Exception e)
 		{

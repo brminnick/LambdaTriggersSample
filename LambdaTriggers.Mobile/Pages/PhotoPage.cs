@@ -12,16 +12,20 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 		Content = new Grid
 		{
 			RowDefinitions = Rows.Define(
-				(Row.CapturedPhoto, Stars(6)),
+				(Row.Photo, Stars(5)),
 				(Row.UploadButton, Stars(2)),
-				(Row.ActivityIndicator, Star),
-				(Row.Thumbail, Stars(2))),
+				(Row.ActivityIndicator, Star)),
+
+			ColumnDefinitions = Columns.Define(
+				(Column.CapturedPhoto, Star),
+				(Column.Thumbnail, Star)),
+
+			ColumnSpacing = 12,
 
 			Children =
 			{
-				new Border
+				new ImageBorder
 				{
-					StrokeThickness = 2,
 					Content = new Grid
 					{
 						Children =
@@ -32,26 +36,16 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 								.Text("Captured Photo")
 								.TextCenter(),
 
-							new Image()
+							new PhotoImage()
 								.Row(0)
 								.Bind(Image.SourceProperty, nameof(PhotoViewModel.CapturedPhoto), convert: (Stream? image) => ImageSource.FromStream(() => image)),
 						}
 					}
 
-				}.Row(Row.CapturedPhoto),
+				}.Row(Row.Photo).Column(Column.CapturedPhoto),
 
-				new Button()
-					.Row(Row.UploadButton)
-					.Text("Upload Photo")
-					.Bind(Button.CommandProperty, nameof(PhotoViewModel.UploadPhotoCommand)),
-
-				new ActivityIndicator { IsRunning = true }
-					.Row(Row.ActivityIndicator)
-					.Bind(IsVisibleProperty, nameof(PhotoViewModel.IsCapturingAndUploadingPhoto)),
-
-				new Border
-				{
-					StrokeThickness = 2,
+				new ImageBorder
+				{					
 					Content = new Grid
 					{
 						new Label()
@@ -60,16 +54,46 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 							.Text("Thumbnail")
 							.TextCenter(),
 
-						new Image()
+						new PhotoImage()
 							.Row(0)
 							.Bind(Image.SourceProperty, nameof(PhotoViewModel.ThumbnailPhotoUri), convert: (Uri? imageUri) => imageUri is not null ? ImageSource.FromUri(imageUri) : null),
 					}
-				}.Row(Row.Thumbail)
+				}.Row(Row.Photo).Column(Column.Thumbnail),
+
+				new Button()
+					.Row(Row.UploadButton).ColumnSpan(All<Column>())
+					.Center()
+					.Text("Upload Photo")
+					.Bind(Button.CommandProperty, nameof(PhotoViewModel.UploadPhotoCommand)),
+
+				new ActivityIndicator { IsRunning = true }
+					.Row(Row.ActivityIndicator).ColumnSpan(All<Column>())
+					.Center()
+					.Bind(IsVisibleProperty, nameof(PhotoViewModel.IsCapturingAndUploadingPhoto)),
 			}
 		};
 	}
 
-	enum Row { CapturedPhoto, UploadButton, ActivityIndicator, Thumbail }
+	enum Row { Photo, UploadButton, ActivityIndicator }
+	enum Column { CapturedPhoto, Thumbnail }
 
-	void HandleError(object? sender, string message) => Dispatcher.DispatchAsync(() => DisplayAlert("Error", message, "OK"));
+	async void HandleError(object? sender, string message) => await Dispatcher.DispatchAsync(() => DisplayAlert("Error", message, "OK"));
+
+	class ImageBorder : Border
+	{
+		public ImageBorder()
+		{
+			Stroke = new SolidColorBrush(Colors.Grey);
+			StrokeThickness = 2;
+			Padding = 12;
+		}
+	}
+
+	class PhotoImage : Image
+	{
+		public PhotoImage()
+		{
+			Aspect = Aspect.Center;
+		}
+	}
 }
