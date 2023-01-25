@@ -38,7 +38,7 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 
 							new PhotoImage()
 								.Row(0)
-								.Bind(Image.SourceProperty, nameof(PhotoViewModel.CapturedPhoto), convert: (Stream? image) => ImageSource.FromStream(() => image)),
+								.Bind(Image.SourceProperty, nameof(PhotoViewModel.CapturedPhoto), convert: (Stream? image) => image is not null ? ImageSource.FromStream(() => image) : null)
 						}
 					}
 
@@ -56,7 +56,7 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 
 						new PhotoImage()
 							.Row(0)
-							.Bind(Image.SourceProperty, nameof(PhotoViewModel.ThumbnailPhotoUri), convert: (Uri? imageUri) => imageUri is not null ? ImageSource.FromUri(imageUri) : null),
+							.Bind(Image.SourceProperty, nameof(PhotoViewModel.ThumbnailPhotoUri), convert: (Uri? imageUri) => imageUri is not null ? ImageSource.FromUri(imageUri) : null)
 					}
 				}.Row(Row.Photo).Column(Column.Thumbnail),
 
@@ -94,6 +94,7 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 		public PhotoImage()
 		{
 			Aspect = Aspect.Center;
+			this.Bind(IsVisibleProperty, nameof(Image.Source), source: RelativeBindingSource.Self, convert: (ImageSource? source) => source is not null);
 		}
 	}
 }
