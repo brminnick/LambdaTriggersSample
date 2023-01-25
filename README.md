@@ -10,4 +10,4 @@ This sample demonstrates how to use AWS Lambda's [HTTP API Gateway Triggers](htt
 4. An AWS Lambda S3 Trigger automatically generates a downscaled thumbnail of the image and saves the thumbnail image back to S3 Storage
 5. The .NET MAUI mobile app retrives the thumbnail image via an AWS Lambda using an API Gateway HTTP trigger and displays it on screen
 
-![](https://user-images.githubusercontent.com/13558917/214358059-13051b19-2efb-423b-84a3-9a267ac16195.png)
+![](https://user-images.githubusercontent.com/13558917/214541434-0244c7f0-cc13-4273-89b0-af5ffd9f9786.png)
