@@ -34,12 +34,12 @@ public sealed class GetThumbnail : IDisposable
 
 		return thumbnailUrl switch
 		{
-			null => new APIGatewayHttpApiV2ProxyResponse()
+			null => new()
 			{
 				StatusCode = (int)HttpStatusCode.NotFound,
 				Body = $"Thumbnail {thumbnailFileName} could not be located in {S3Service.BucketName}"
 			},
-			_ => new APIGatewayHttpApiV2ProxyResponse()
+			_ => new()
 			{
 				StatusCode = (int)HttpStatusCode.OK,
 				Body = JsonSerializer.Serialize(thumbnailUrl),

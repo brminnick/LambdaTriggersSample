@@ -11,7 +11,7 @@ using LambdaTriggers.Common;
 
 namespace LambdaTriggers.UploadImage;
 
-public class UploadImage
+public sealed class UploadImage
 {
 	static readonly IAmazonS3 _s3Client = new AmazonS3Client();
 
