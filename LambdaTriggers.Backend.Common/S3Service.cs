@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
 using Amazon.Lambda.Core;
 using Amazon.S3;

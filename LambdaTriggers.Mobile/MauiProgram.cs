@@ -3,7 +3,6 @@ using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using LambdaTriggers.Common;
 using Polly;
-using Polly.Extensions.Http;
 using Refit;
 
 namespace LambdaTriggers.Mobile;
