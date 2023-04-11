@@ -5,7 +5,7 @@ partial class PhotoViewModel : BaseViewModel
 	readonly WeakEventManager _eventManager = new();
 
 	readonly IDispatcher _dispatcher;
-	readonly IMediaPicker _mediapicker;
+	readonly IMediaPicker _mediaPicker;
 	readonly PhotosApiService _photosApiService;
 
 	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(UploadPhotoCommand))]
@@ -20,7 +20,7 @@ partial class PhotoViewModel : BaseViewModel
 	public PhotoViewModel(IDispatcher dispatcher, IMediaPicker mediaPicker, PhotosApiService photosApiService)
 	{
 		_dispatcher = dispatcher;
-		_mediapicker = mediaPicker;
+		_mediaPicker = mediaPicker;
 		_photosApiService = photosApiService;
 	}
 
@@ -66,7 +66,7 @@ partial class PhotoViewModel : BaseViewModel
 
 			IsCapturingAndUploadingPhoto = true;
 
-			var photo = await _dispatcher.DispatchAsync(() => _mediapicker.CapturePhotoAsync(new()
+			var photo = await _dispatcher.DispatchAsync(() => _mediaPicker.CapturePhotoAsync(new()
 			{
 				Title = Guid.NewGuid().ToString()
 			})).ConfigureAwait(false);
