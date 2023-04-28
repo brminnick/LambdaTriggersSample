@@ -1,3 +1,4 @@
+[![.NET MAUI](https://github.com/brminnick/LambdaTriggersSample/actions/workflows/maui.yml/badge.svg)](https://github.com/brminnick/LambdaTriggersSample/actions/workflows/maui.yml) [![Backend](https://github.com/brminnick/LambdaTriggersSample/actions/workflows/backend.yml/badge.svg)](https://github.com/brminnick/LambdaTriggersSample/actions/workflows/backend.yml)
 # Lambda Triggers Sample
 
 A sample app demonstrating an end-to-end mobile workflow using [.NET MAUI](https://learn.microsoft.com/en-us/dotnet/maui/?view=net-maui-7.0), + [Serverless AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/lambda-csharp.html) + [AWS S3 Storage](https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/csharp_s3_code_examples.html) in C#.
