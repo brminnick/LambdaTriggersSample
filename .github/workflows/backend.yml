@@ -9,7 +9,7 @@ on:
       - "*"
 
 jobs:
-  Build_GraphQL:
+  Build_Backend_Common:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,11 +23,44 @@ jobs:
     - name: Build LambdaTriggers.Backend.Common
       run: dotnet build LambdaTriggers.Backend.Common/LambdaTriggers.Backend.Common.csproj -c Release
 
+  Build_GenerateThumbnail:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Setup .NET v7.0
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
+
     - name: Build LambdaTriggers.GenerateThumbnail
       run: dotnet build LambdaTriggers.GenerateThumbnail/LambdaTriggers.GenerateThumbnail.csproj -c Release
 
+  Build_GetThumbnail:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Setup .NET v7.0
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
+
     - name: LambdaTriggers.GetThumbnail
       run: dotnet build LambdaTriggers.GetThumbnail/LambdaTriggers.GetThumbnail.csproj -c Release
+
+  Build_UploadImage:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Setup .NET v7.0
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
 
     - name: LambdaTriggers.UploadImage
       run: dotnet build LambdaTriggers.UploadImage/LambdaTriggers.UploadImage.csproj -c Release
