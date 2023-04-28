@@ -9,7 +9,7 @@ on:
       - "*"
 
 jobs:
-  Build_Backend.Common:
+  Build_Backend_Common:
     runs-on: ubuntu-latest
 
     steps:
