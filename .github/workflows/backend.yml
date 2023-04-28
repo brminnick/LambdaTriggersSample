@@ -9,7 +9,7 @@ on:
       - "*"
 
 jobs:
-  Build_GraphQL:
+  Build_Lambda:
     runs-on: ubuntu-latest
 
     steps:
