@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Markup;
+using Microsoft.Maui.Controls.Shapes;
 using static CommunityToolkit.Maui.Markup.GridRowsColumns;
 
 namespace LambdaTriggers.Mobile;
@@ -38,7 +39,9 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 
 							new PhotoImage()
 								.Row(0)
-								.Bind(Image.SourceProperty, nameof(PhotoViewModel.CapturedPhoto), convert: (Stream? image) => image is not null ? ImageSource.FromStream(() => image) : null)
+								.Bind(Image.SourceProperty,
+										static (PhotoViewModel vm) => vm.CapturedPhoto,
+										convert: (Stream? image) => image is not null ? ImageSource.FromStream(() => image) : null)
 						}
 					}
 
@@ -56,7 +59,9 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 
 						new PhotoImage()
 							.Row(0)
-							.Bind(Image.SourceProperty, nameof(PhotoViewModel.ThumbnailPhotoUri), convert: (Uri? imageUri) => imageUri is not null ? ImageSource.FromUri(imageUri) : null)
+							.Bind(Image.SourceProperty,
+									static (PhotoViewModel vm) => vm.ThumbnailPhotoUri,
+									convert: (Uri? imageUri) => imageUri is not null ? ImageSource.FromUri(imageUri) : null)
 					}
 				}.Row(Row.Photo).Column(Column.Thumbnail),
 
@@ -64,12 +69,12 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 					.Row(Row.UploadButton).ColumnSpan(All<Column>())
 					.Center()
 					.Text("Upload Photo")
-					.Bind(Button.CommandProperty, nameof(PhotoViewModel.UploadPhotoCommand)),
+					.BindCommand(static (PhotoViewModel vm) => vm.UploadPhotoCommand, mode: BindingMode.OneTime),
 
 				new ActivityIndicator { IsRunning = true }
 					.Row(Row.ActivityIndicator).ColumnSpan(All<Column>())
 					.Center()
-					.Bind(IsVisibleProperty, nameof(PhotoViewModel.IsCapturingAndUploadingPhoto)),
+					.Bind(IsVisibleProperty, static (PhotoViewModel vm) => vm.IsCapturingAndUploadingPhoto),
 			}
 		};
 	}
@@ -84,6 +89,7 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 		public ImageBorder()
 		{
 			Stroke = new SolidColorBrush(Colors.Grey);
+			StrokeShape = new RoundRectangle { CornerRadius = 12 };
 			StrokeThickness = 2;
 			Padding = 12;
 		}
