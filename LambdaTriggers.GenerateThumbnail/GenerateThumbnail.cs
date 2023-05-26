@@ -6,8 +6,6 @@ using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.S3;
 using LambdaTriggers.Backend.Common;
 using LambdaTriggers.Common;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 
 namespace LambdaTriggers.GenerateThumbnail;
 

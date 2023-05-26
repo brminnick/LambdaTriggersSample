@@ -48,7 +48,7 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 				}.Row(Row.Photo).Column(Column.CapturedPhoto),
 
 				new ImageBorder
-				{					
+				{
 					Content = new Grid
 					{
 						new Label()
