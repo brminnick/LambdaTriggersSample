@@ -41,7 +41,7 @@ public sealed class GenerateThumbnail : IDisposable
 		}
 		catch (Exception e)
 		{
-			context.Logger.LogInformation($"Error creating thumbail for {s3Event.Object.Key} from bucket {s3Event.Bucket.Name}.");
+			context.Logger.LogInformation($"Error creating thumbnail for {s3Event.Object.Key} from bucket {s3Event.Bucket.Name}.");
 			context.Logger.LogInformation(e.ToString());
 			throw;
 		}

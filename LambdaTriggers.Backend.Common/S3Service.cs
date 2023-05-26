@@ -38,7 +38,7 @@ public static class S3Service
 		if (putObjectResponse.HttpStatusCode is not HttpStatusCode.OK)
 			throw new HttpRequestException($"{nameof(IAmazonS3.PutObjectAsync)} Failed: {putObjectResponse.HttpStatusCode}");
 
-		logger.LogInformation($"Upload suceeded");
+		logger.LogInformation($"Upload succeeded");
 		logger.LogInformation($"{nameof(putObjectResponse.ChecksumSHA256)}: {putObjectResponse.ChecksumSHA256}");
 
 		return new Uri(fileUrl);
