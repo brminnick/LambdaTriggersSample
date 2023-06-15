@@ -53,7 +53,7 @@ public sealed class GetThumbnail : IDisposable
 	}
 
 	static Task Main(string[] args) =>
-		LambdaBootstrapBuilder.Create((APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context) => FunctionHandler(request, context), new DefaultLambdaJsonSerializer())
-							.Build()
-							.RunAsync();
+		LambdaBootstrapBuilder.Create<APIGatewayHttpApiV2ProxyRequest>(FunctionHandler, new DefaultLambdaJsonSerializer())
+								.Build()
+								.RunAsync();
 }

@@ -57,7 +57,7 @@ public sealed class UploadImage
 	}
 
 	static Task Main(string[] args) =>
-		LambdaBootstrapBuilder.Create((APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context) => FunctionHandler(request, context), new DefaultLambdaJsonSerializer())
+		LambdaBootstrapBuilder.Create<APIGatewayHttpApiV2ProxyRequest>(FunctionHandler, new DefaultLambdaJsonSerializer())
 								.Build()
 								.RunAsync();
 }
