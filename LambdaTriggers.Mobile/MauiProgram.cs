@@ -25,17 +25,17 @@ public class MauiProgram
 		builder.Services.AddSingleton<PhotosApiService>();
 		builder.Services.AddRefitClient<IUploadPhotosAPI>()
 							.ConfigureHttpClient(client => client.BaseAddress = new Uri(Constants.UploadPhotoApiUrl))
-							.AddTransientHttpErrorPolicy(builder => builder.WaitAndRetryAsync(3, sleepDurationProvider));
+							.AddTransientHttpErrorPolicy(builder => builder.WaitAndRetryAsync(10, SleepDurationProvider));
 
 		builder.Services.AddRefitClient<IGetThumbnailApi>()
 							.ConfigureHttpClient(client => client.BaseAddress = new Uri(Constants.GetThumbnailApiUrl))
-							.AddTransientHttpErrorPolicy(builder => builder.OrResult(response => response.StatusCode is HttpStatusCode.NotFound).WaitAndRetryAsync(3, sleepDurationProvider));
+							.AddTransientHttpErrorPolicy(builder => builder.OrResult(response => response.StatusCode is HttpStatusCode.NotFound).WaitAndRetryAsync(10, SleepDurationProvider));
 
 		// Pages + View Models
 		builder.Services.AddTransient<PhotoPage, PhotoViewModel>();
 
 		return builder.Build();
 
-		static TimeSpan sleepDurationProvider(int attemptNumber) => TimeSpan.FromSeconds(Math.Pow(2, attemptNumber));
+		static TimeSpan SleepDurationProvider(int attemptNumber) => TimeSpan.FromSeconds(Math.Pow(1.1, attemptNumber));
 	}
 }
