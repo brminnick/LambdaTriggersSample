@@ -11,11 +11,13 @@ using LambdaTriggers.Common;
 
 namespace LambdaTriggers.UploadImage;
 
-public sealed class UploadImage
+public sealed class UploadImage : IDisposable
 {
 	static readonly IAmazonS3 _s3Client = new AmazonS3Client();
 
-	public static async Task<APIGatewayHttpApiV2ProxyResponse> FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
+	public static async Task<APIGatewayHttpApiV2ProxyResponse> FunctionHandler(
+		APIGatewayHttpApiV2ProxyRequest request, 
+		ILambdaContext context)
 	{
 		if (request.QueryStringParameters is null
 			|| !request.QueryStringParameters.TryGetValue(Constants.ImageFileNameQueryParameter, out var filename)
@@ -54,6 +56,12 @@ public sealed class UploadImage
 				Body = JsonSerializer.Serialize(ex.Message)
 			};
 		}
+	}
+
+
+	public void Dispose()
+	{
+		_s3Client.Dispose();
 	}
 
 	static Task Main(string[] args) =>

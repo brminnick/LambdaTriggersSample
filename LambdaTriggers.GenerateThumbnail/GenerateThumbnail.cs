@@ -31,7 +31,7 @@ public sealed class GenerateThumbnail : IDisposable
 			if (imageMemoryStream is null || imageMemoryStream.ToArray().Length < 1)
 				throw new InvalidOperationException($"The document '{s3Event.Object.Key}' is invalid");
 
-			using var thumbnail = await GetPNGThumbnail(imageMemoryStream).ConfigureAwait(false);
+			using var thumbnail = await CreatePNGThumbnail(imageMemoryStream).ConfigureAwait(false);
 
 			var thumbnailName = S3Service.GenerateThumbnailFilename(s3Event.Object.Key);
 
@@ -50,7 +50,7 @@ public sealed class GenerateThumbnail : IDisposable
 		_s3Client.Dispose();
 	}
 
-	static async Task<MemoryStream> GetPNGThumbnail(Stream imageStream)
+	static async Task<MemoryStream> CreatePNGThumbnail(Stream imageStream)
 	{
 		var resizeOptions = new ResizeOptions
 		{
