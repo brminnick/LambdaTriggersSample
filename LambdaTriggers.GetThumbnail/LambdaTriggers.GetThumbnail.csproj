@@ -24,7 +24,7 @@
   -->
   <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-arm64'">
     <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="68.2.0.9" />
-    <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="72.1.0.2" />
+    <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="72.1.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LambdaTriggers.Backend.Common\LambdaTriggers.Backend.Common.csproj" />
