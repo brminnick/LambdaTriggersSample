@@ -24,11 +24,11 @@ public class MauiProgram
 		builder.Services.AddSingleton(MediaPicker.Default);
 		builder.Services.AddSingleton<PhotosApiService>();
 		builder.Services.AddRefitClient<IUploadPhotosAPI>()
-							.ConfigureHttpClient(client => client.BaseAddress = new Uri(Constants.UploadPhotoApiUrl))
+							.ConfigureHttpClient(static client => client.BaseAddress = new Uri(Constants.UploadPhotoApiUrl))
 							.AddTransientHttpErrorPolicy(static builder => builder.WaitAndRetryAsync(10, SleepDurationProvider));
 
 		builder.Services.AddRefitClient<IGetThumbnailApi>()
-							.ConfigureHttpClient(client => client.BaseAddress = new Uri(Constants.GetThumbnailApiUrl))
+							.ConfigureHttpClient(static client => client.BaseAddress = new Uri(Constants.GetThumbnailApiUrl))
 							.AddTransientHttpErrorPolicy(static builder => builder.OrResult(response => response.StatusCode is HttpStatusCode.NotFound).WaitAndRetryAsync(10, SleepDurationProvider));
 
 		// Pages + View Models
