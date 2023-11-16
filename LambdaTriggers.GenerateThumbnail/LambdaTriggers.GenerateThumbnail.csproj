@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<OutputType>Exe</OutputType>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>$(NetVersion)</TargetFramework>
-		<AWSProjectType>Lambda</AWSProjectType>
-		<AssemblyName>bootstrap</AssemblyName>
-		<!-- This property makes the build directory similar to a publish directory and helps the AWS .NET Lambda Mock Test Tool find project dependencies. -->
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<!-- 
-		Enable trimming to reduce package size of self contained publish which can reduce cold starts. Trimming alters
-		the .NET assemblies put in the deployment package. Additional runtime testing is required to make sure trimming
-		does not have any unattended consequences.
-    
-	<PublishTrimmed>true</PublishTrimmed>
-	-->
-		<!-- Generate ready to run images during publishing to improve cold start time. -->
-		<PublishReadyToRun>true</PublishReadyToRun>
-	</PropertyGroup>
+    <AWSProjectType>Lambda</AWSProjectType>
+    <AssemblyName>bootstrap</AssemblyName>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AWSProjectType>Lambda</AWSProjectType>
+    <AssemblyName>bootstrap</AssemblyName>
+    <PublishAot>true</PublishAot>
+    <EventSourceSupport>false</EventSourceSupport>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <StripSymbols>true</StripSymbols>
+    <OptimizationPreference>Speed</OptimizationPreference>
+  </PropertyGroup>
 	<!-- 
   When publishing Lambda functions for ARM64 to the provided.al2 runtime a newer version of libicu needs to be included
   in the deployment bundle because .NET requires a newer version of libicu then is preinstalled with Amazon Linux 2.

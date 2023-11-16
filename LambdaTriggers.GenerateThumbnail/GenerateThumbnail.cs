@@ -1,19 +1,19 @@
-using System.Net;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices.JavaScript;
+using Amazon.Lambda.Annotations;
 using Amazon.Lambda.Core;
-using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.S3Events;
-using Amazon.Lambda.Serialization.SystemTextJson;
-using Amazon.S3;
 using LambdaTriggers.Backend.Common;
 using LambdaTriggers.Common;
 
 namespace LambdaTriggers.GenerateThumbnail;
 
-public sealed class GenerateThumbnail : IDisposable
+public sealed class GenerateThumbnail
 {
-	static readonly IAmazonS3 _s3Client = new AmazonS3Client();
-
-	public static async Task FunctionHandler(S3Event evnt, ILambdaContext context)
+	[LambdaFunction]
+	[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(JSType.Function))]
+	[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(S3Event))]
+	public async Task FunctionHandler(S3Event evnt, [FromServices] S3Service s3Service, ILambdaContext context)
 	{
 		var s3Event = evnt.Records?[0].S3;
 		if (s3Event is null || s3Event.Object.Key.EndsWith(Constants.ThumbnailSuffix))
@@ -21,21 +21,12 @@ public sealed class GenerateThumbnail : IDisposable
 
 		try
 		{
-			using var response = await _s3Client.GetObjectAsync(s3Event.Bucket.Name, s3Event.Object.Key);
-			if (response.HttpStatusCode is not HttpStatusCode.OK)
-				throw new InvalidOperationException("Failed to get S3 file");
+			using var response = await s3Service.GetObject(s3Event.Bucket.Name, s3Event.Object.Key);
+			using var thumbnail = await CreatePNGThumbnail(response.ResponseStream).ConfigureAwait(false);
 
-			using var imageMemoryStream = new MemoryStream();
+			var thumbnailName = s3Service.GenerateThumbnailFilename(s3Event.Object.Key);
 
-			await response.ResponseStream.CopyToAsync(imageMemoryStream).ConfigureAwait(false);
-			if (imageMemoryStream is null || imageMemoryStream.ToArray().Length < 1)
-				throw new InvalidOperationException($"The document '{s3Event.Object.Key}' is invalid");
-
-			using var thumbnail = await CreatePNGThumbnail(imageMemoryStream).ConfigureAwait(false);
-
-			var thumbnailName = S3Service.GenerateThumbnailFilename(s3Event.Object.Key);
-
-			await S3Service.UploadContentToS3(_s3Client, s3Event.Bucket.Name, thumbnailName, thumbnail, context.Logger).ConfigureAwait(false);
+			await s3Service.UploadContentToS3(s3Event.Bucket.Name, thumbnailName, thumbnail, context.Logger).ConfigureAwait(false);
 		}
 		catch (Exception e)
 		{
@@ -43,11 +34,6 @@ public sealed class GenerateThumbnail : IDisposable
 			context.Logger.LogInformation(e.ToString());
 			throw;
 		}
-	}
-
-	public void Dispose()
-	{
-		_s3Client.Dispose();
 	}
 
 	static async Task<MemoryStream> CreatePNGThumbnail(Stream imageStream)
@@ -68,9 +54,4 @@ public sealed class GenerateThumbnail : IDisposable
 
 		return outputMemoryStream;
 	}
-
-	static Task Main(string[] args) =>
-		LambdaBootstrapBuilder.Create<S3Event>(FunctionHandler, new DefaultLambdaJsonSerializer())
-								.Build()
-								.RunAsync();
 }

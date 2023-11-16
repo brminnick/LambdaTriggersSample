@@ -7,11 +7,24 @@ using LambdaTriggers.Common;
 
 namespace LambdaTriggers.Backend.Common;
 
-public static class S3Service
+public class S3Service
 {
+	static readonly IAmazonS3 _s3Client = new AmazonS3Client();
+	
 	public const string BucketName = "lambdatriggersbucket";
+	
+	public string GenerateThumbnailFilename(in string fileName) => Path.GetFileNameWithoutExtension(fileName) + Constants.ThumbnailSuffix;
 
-	public static async Task<Uri> UploadContentToS3<T>(IAmazonS3 s3Client, string bucket, string key, T content, ILambdaLogger logger)
+	public async Task<GetObjectResponse> GetObject(string bucket, string key)
+	{
+		var response = await _s3Client.GetObjectAsync(bucket, key);
+		if (response.HttpStatusCode is not HttpStatusCode.OK)
+			throw new InvalidOperationException("Failed to get S3 file");
+
+		return response ?? throw new InvalidOperationException("Response cannot be null");
+	}
+
+	public async Task<Uri> UploadContentToS3<T>(string bucket, string key, T content, ILambdaLogger logger)
 	{
 		var request = content switch
 		{
@@ -32,8 +45,8 @@ public static class S3Service
 
 		logger.LogInformation($"Uploading object to S3...");
 
-		var putObjectResponse = await s3Client.PutObjectAsync(request).ConfigureAwait(false);
-		var fileUrl = s3Client.GeneratePreSignedURL(bucket, key, DateTime.UtcNow.AddYears(1), null);
+		var putObjectResponse = await _s3Client.PutObjectAsync(request).ConfigureAwait(false);
+		var fileUrl = _s3Client.GeneratePreSignedURL(bucket, key, DateTime.UtcNow.AddYears(1), null);
 
 		if (putObjectResponse.HttpStatusCode is not HttpStatusCode.OK)
 			throw new HttpRequestException($"{nameof(IAmazonS3.PutObjectAsync)} Failed: {putObjectResponse.HttpStatusCode}");
@@ -44,20 +57,18 @@ public static class S3Service
 		return new Uri(fileUrl);
 	}
 
-	public static string GenerateThumbnailFilename(in string fileName) => Path.GetFileNameWithoutExtension(fileName) + Constants.ThumbnailSuffix;
-
-	public static async Task<Uri?> GetFileUri(IAmazonS3 s3Client, string bucket, string key, ILambdaLogger lambdaLogger, DateTime? expirationDate = default)
+	public async Task<Uri?> GetFileUri(string bucket, string key, ILambdaLogger lambdaLogger, DateTime? expirationDate = default)
 	{
 		expirationDate ??= DateTime.UtcNow.AddYears(1);
 
 		lambdaLogger.LogInformation("Creating Presigned URL...");
 
 
-		var doesFileExist = await DoesFileExist(bucket, key, s3Client, lambdaLogger).ConfigureAwait(false);
+		var doesFileExist = await DoesFileExist(bucket, key, _s3Client, lambdaLogger).ConfigureAwait(false);
 		if (!doesFileExist)
 			return null;
 
-		var url = s3Client.GeneratePreSignedURL(bucket, key, expirationDate.Value, null);
+		var url = _s3Client.GeneratePreSignedURL(bucket, key, expirationDate.Value, null);
 
 		lambdaLogger.LogInformation($"Presigned URL Expiring on {expirationDate:MMMM dd, yyyy} Generated: {url}");
 

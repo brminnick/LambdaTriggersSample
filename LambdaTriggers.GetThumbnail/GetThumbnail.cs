@@ -1,20 +1,23 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
+using Amazon.Lambda.Annotations;
+using Amazon.Lambda.Annotations.APIGateway;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
-using Amazon.Lambda.RuntimeSupport;
-using Amazon.Lambda.Serialization.SystemTextJson;
-using Amazon.S3;
 using LambdaTriggers.Backend.Common;
 using LambdaTriggers.Common;
 
 namespace LambdaTriggers.GetThumbnail;
 
-public sealed class GetThumbnail : IDisposable
+public sealed class GetThumbnail
 {
-	static readonly IAmazonS3 _s3Client = new AmazonS3Client();
-
-	public static async Task<APIGatewayHttpApiV2ProxyResponse> FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
+	[LambdaFunction, HttpApi(LambdaHttpMethod.Get, "/")]  
+	[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(JSType.Function))]
+	[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(APIGatewayHttpApiV2ProxyRequest))]
+	[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(APIGatewayHttpApiV2ProxyResponse))]
+	public async Task<APIGatewayHttpApiV2ProxyResponse> FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, [FromServices] S3Service s3Service, ILambdaContext context)
 	{
 		if (request.QueryStringParameters is null
 			|| !request.QueryStringParameters.TryGetValue(Constants.ImageFileNameQueryParameter, out var filename)
@@ -29,8 +32,8 @@ public sealed class GetThumbnail : IDisposable
 			};
 		}
 
-		var thumbnailFileName = S3Service.GenerateThumbnailFilename(filename);
-		var thumbnailUrl = await S3Service.GetFileUri(_s3Client, S3Service.BucketName, thumbnailFileName, context.Logger).ConfigureAwait(false);
+		var thumbnailFileName = s3Service.GenerateThumbnailFilename(filename);
+		var thumbnailUrl = await s3Service.GetFileUri(S3Service.BucketName, thumbnailFileName, context.Logger).ConfigureAwait(false);
 
 		return thumbnailUrl switch
 		{
@@ -46,14 +49,4 @@ public sealed class GetThumbnail : IDisposable
 			}
 		};
 	}
-
-	public void Dispose()
-	{
-		_s3Client.Dispose();
-	}
-
-	static Task Main(string[] args) =>
-		LambdaBootstrapBuilder.Create<APIGatewayHttpApiV2ProxyRequest>(FunctionHandler, new DefaultLambdaJsonSerializer())
-								.Build()
-								.RunAsync();
 }
