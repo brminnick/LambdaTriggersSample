@@ -6,7 +6,7 @@
         "dotnet lambda help",
         "All the command line options for the Lambda command can be specified in this file."
     ],
-    "profile"     : "VisualStudioToolkit",
+    "profile"     : "Visual Studio Toolkit",
     "region"      : "us-west-1",
     "configuration" : "Release",
     "function-runtime" : "provided.al2",
@@ -14,7 +14,7 @@
     "function-timeout"     : 30,
     "function-handler"     : "bootstrap",
     "msbuild-parameters"   : "--self-contained true",
-    "framework"            : "net7.0",
+    "framework"            : "net8.0",
     "function-name"        : "LambdaTriggers_UploadImage",
     "function-description" : "",
     "package-type"         : "Zip",
