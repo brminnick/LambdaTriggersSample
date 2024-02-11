@@ -24,5 +24,8 @@
     "function-security-groups" : "",
     "tracing-mode"             : "Active",
     "environment-variables"    : "",
-    "image-tag"                : ""
+    "image-tag"                : "",
+    "s3-bucket"                : "lambdatriggersbucket",
+    "template"                 : "serverless.template",
+    "stack-name"               : "HelloVisualStudioToolkit"
 }
