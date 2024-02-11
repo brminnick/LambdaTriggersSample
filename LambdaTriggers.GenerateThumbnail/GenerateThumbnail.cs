@@ -5,6 +5,8 @@ using Amazon.Lambda.Core;
 using Amazon.Lambda.S3Events;
 using LambdaTriggers.Backend.Common;
 using LambdaTriggers.Common;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace LambdaTriggers.GenerateThumbnail;
 
