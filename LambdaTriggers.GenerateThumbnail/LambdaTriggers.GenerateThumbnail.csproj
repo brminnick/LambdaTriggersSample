@@ -26,7 +26,7 @@
 		<PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="72.1.0.3" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.1" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.2" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\LambdaTriggers.Backend.Common\LambdaTriggers.Backend.Common.csproj" />
