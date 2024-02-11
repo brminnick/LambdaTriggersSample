@@ -1,5 +1,7 @@
 using System.Net;
 using System.Text.Json;
+using Amazon.Lambda.Annotations;
+using Amazon.Lambda.Annotations.APIGateway;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
@@ -15,9 +17,8 @@ public sealed class UploadImage : IDisposable
 {
 	static readonly IAmazonS3 _s3Client = new AmazonS3Client();
 
-	public static async Task<APIGatewayHttpApiV2ProxyResponse> FunctionHandler(
-		APIGatewayHttpApiV2ProxyRequest request, 
-		ILambdaContext context)
+	[LambdaFunction, HttpApi(LambdaHttpMethod.Post, "/")]
+	public async Task<APIGatewayHttpApiV2ProxyResponse> FunctionHandler([FromServices] S3Service s3Service, APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
 	{
 		if (request.QueryStringParameters is null
 			|| !request.QueryStringParameters.TryGetValue(Constants.ImageFileNameQueryParameter, out var filename)
@@ -37,7 +38,7 @@ public sealed class UploadImage : IDisposable
 			var multipartFormParser = await MultipartFormDataParser.ParseAsync(new MemoryStream(Convert.FromBase64String(request.Body)));
 			var image = multipartFormParser.Files[0].Data;
 
-			var photoUri = await S3Service.UploadContentToS3(_s3Client, S3Service.BucketName, filename, image, context.Logger);
+			var photoUri = await s3Service.UploadContentToS3(_s3Client, S3Service.BucketName, filename, image, context.Logger);
 			context.Logger.LogInformation("Saved Photo to S3");
 
 			return new APIGatewayHttpApiV2ProxyResponse
@@ -63,9 +64,4 @@ public sealed class UploadImage : IDisposable
 	{
 		_s3Client.Dispose();
 	}
-
-	static Task Main(string[] args) =>
-		LambdaBootstrapBuilder.Create<APIGatewayHttpApiV2ProxyRequest>(FunctionHandler, new DefaultLambdaJsonSerializer())
-								.Build()
-								.RunAsync();
 }
