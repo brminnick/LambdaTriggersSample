@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using LambdaTriggers.Common;
+using Microsoft.Extensions.Http.Resilience;
 using Polly;
 using Refit;
 
@@ -25,11 +26,11 @@ public class MauiProgram
 		builder.Services.AddSingleton<PhotosApiService>();
 		builder.Services.AddRefitClient<IUploadPhotosAPI>()
 							.ConfigureHttpClient(static client => client.BaseAddress = new Uri(Constants.UploadPhotoApiUrl))
-							.AddTransientHttpErrorPolicy(static builder => builder.WaitAndRetryAsync(10, SleepDurationProvider));
+							.AddStandardResilienceHandler(options => options.Retry = new MobileHttpRetryStrategyOptions() );
 
 		builder.Services.AddRefitClient<IGetThumbnailApi>()
 							.ConfigureHttpClient(static client => client.BaseAddress = new Uri(Constants.GetThumbnailApiUrl))
-							.AddTransientHttpErrorPolicy(static builder => builder.OrResult(response => response.StatusCode is HttpStatusCode.NotFound).WaitAndRetryAsync(10, SleepDurationProvider));
+							.AddStandardResilienceHandler(options => options.Retry = new MobileHttpRetryStrategyOptions() );
 
 		// Pages + View Models
 		builder.Services.AddTransient<PhotoPage, PhotoViewModel>();
@@ -37,5 +38,16 @@ public class MauiProgram
 		return builder.Build();
 
 		static TimeSpan SleepDurationProvider(int attemptNumber) => TimeSpan.FromSeconds(Math.Pow(1.1, attemptNumber));
+	}
+	
+	sealed class MobileHttpRetryStrategyOptions : HttpRetryStrategyOptions
+	{
+		public MobileHttpRetryStrategyOptions()
+		{
+			BackoffType = DelayBackoffType.Exponential;
+			MaxRetryAttempts = 3;
+			UseJitter = true;
+			Delay = TimeSpan.FromSeconds(1.5);
+		}
 	}
 }
