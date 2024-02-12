@@ -9,7 +9,7 @@
     "profile"     : "Visual Studio Toolkit",
     "region"      : "us-west-1",
     "configuration" : "Release",
-    "function-runtime" : "provided.al2",
+    "function-runtime" : "provided.al2023",
     "function-memory-size" : 256,
     "function-timeout"     : 30,
     "function-handler"     : "bootstrap",
@@ -21,8 +21,7 @@
     "function-architecture" : "x86_64",
     "function-subnets"      : "",
     "function-security-groups" : "",
-    "tracing-mode"             : "Active",
+    "tracing-mode"             : "PassThrough",
     "environment-variables"    : "",
-    "image-tag"                : "",
-    "function-description"     : ""
+    "image-tag"                : ""
 }

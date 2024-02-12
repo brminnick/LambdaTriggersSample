@@ -52,8 +52,11 @@ public sealed class GetThumbnail : IDisposable
 		_s3Client.Dispose();
 	}
 
-	static Task Main(string[] args) =>
-		LambdaBootstrapBuilder.Create<APIGatewayHttpApiV2ProxyRequest>(FunctionHandler, new DefaultLambdaJsonSerializer())
+	static async Task Main(string[] args)
+	{
+		var handler = FunctionHandler;
+		await LambdaBootstrapBuilder.Create(handler, new DefaultLambdaJsonSerializer())
 								.Build()
 								.RunAsync();
+	}
 }

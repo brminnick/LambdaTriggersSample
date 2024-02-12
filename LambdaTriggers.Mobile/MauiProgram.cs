@@ -36,8 +36,6 @@ public class MauiProgram
 		builder.Services.AddTransient<PhotoPage, PhotoViewModel>();
 
 		return builder.Build();
-
-		static TimeSpan SleepDurationProvider(int attemptNumber) => TimeSpan.FromSeconds(Math.Pow(1.1, attemptNumber));
 	}
 	
 	sealed class MobileHttpRetryStrategyOptions : HttpRetryStrategyOptions
