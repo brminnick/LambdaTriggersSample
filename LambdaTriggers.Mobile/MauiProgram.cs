@@ -46,6 +46,9 @@ public class MauiProgram
 			MaxRetryAttempts = 3;
 			UseJitter = true;
 			Delay = TimeSpan.FromSeconds(1.5);
+			ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+									.Handle<HttpRequestException>()
+									.HandleResult(response => !response.IsSuccessStatusCode);
 		}
 	}
 }
