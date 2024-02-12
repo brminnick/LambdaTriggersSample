@@ -18,10 +18,11 @@
     "function-name"        : "LambdaTriggers_GenerateThumbnail",
     "package-type"         : "Zip",
     "function-role"        : "arn:aws:iam::723361041013:role/lambda_exec_LambdaTriggers-0",
-    "function-architecture" : "x86_64",
+    "function-architecture" : "arm64",
     "function-subnets"      : "",
     "function-security-groups" : "",
     "tracing-mode"             : "PassThrough",
     "environment-variables"    : "",
-    "image-tag"                : ""
+    "image-tag"                : "",
+    "function-description"     : ""
 }
