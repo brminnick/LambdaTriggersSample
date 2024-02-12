@@ -71,8 +71,10 @@ public sealed class GenerateThumbnail : IDisposable
 		return outputMemoryStream;
 	}
 
-	static Task Main(string[] args) =>
-		LambdaBootstrapBuilder.Create<S3Event>(FunctionHandler, new DefaultLambdaJsonSerializer())
+	static async Task Main(string[] args)
+	{
+		await LambdaBootstrapBuilder.Create<S3Event>(FunctionHandler, new DefaultLambdaJsonSerializer())
 								.Build()
 								.RunAsync();
+	}
 }
