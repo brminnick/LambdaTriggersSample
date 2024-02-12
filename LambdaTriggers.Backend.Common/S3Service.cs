@@ -48,7 +48,7 @@ public static class S3Service
 
 	public static async Task<Uri?> GetFileUri(IAmazonS3 s3Client, string bucket, string key, ILambdaLogger lambdaLogger, DateTime? expirationDate = default)
 	{
-		expirationDate ??= DateTime.UtcNow.AddHours(1);
+		expirationDate ??= DateTime.UtcNow.AddMinutes(1);
 
 		lambdaLogger.LogInformation("Creating Presigned URL...");
 
