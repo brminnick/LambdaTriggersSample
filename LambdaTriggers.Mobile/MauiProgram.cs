@@ -43,12 +43,17 @@ public class MauiProgram
 		public MobileHttpRetryStrategyOptions()
 		{
 			BackoffType = DelayBackoffType.Exponential;
-			MaxRetryAttempts = 3;
+			MaxRetryAttempts = 25;
 			UseJitter = true;
-			Delay = TimeSpan.FromSeconds(1.5);
-			ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-									.Handle<HttpRequestException>()
-									.HandleResult(response => !response.IsSuccessStatusCode);
+			Delay = TimeSpan.FromMilliseconds(200);
+			ShouldHandle = args => args.Outcome switch
+			{
+				{ Exception: ApiException } => PredicateResult.True(),
+				{ Exception: HttpRequestException } => PredicateResult.True(),
+				{ Result.StatusCode: HttpStatusCode.NotFound } => PredicateResult.True(),
+				{ Result.IsSuccessStatusCode: false } => PredicateResult.True(),
+				_ => PredicateResult.False()
+			};
 		}
 	}
 }
