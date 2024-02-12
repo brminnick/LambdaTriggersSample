@@ -36,8 +36,6 @@ public class MauiProgram
 		builder.Services.AddTransient<PhotoPage, PhotoViewModel>();
 
 		return builder.Build();
-
-		static TimeSpan SleepDurationProvider(int attemptNumber) => TimeSpan.FromSeconds(Math.Pow(1.1, attemptNumber));
 	}
 	
 	sealed class MobileHttpRetryStrategyOptions : HttpRetryStrategyOptions
@@ -48,6 +46,9 @@ public class MauiProgram
 			MaxRetryAttempts = 3;
 			UseJitter = true;
 			Delay = TimeSpan.FromSeconds(1.5);
+			ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+									.Handle<HttpRequestException>()
+									.HandleResult(response => !response.IsSuccessStatusCode);
 		}
 	}
 }
