@@ -39,9 +39,9 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 
 							new PhotoImage()
 								.Row(0)
-								.Bind(Image.SourceProperty,
-										static (PhotoViewModel vm) => vm.CapturedPhoto,
-										convert: static (Stream? image) => image is not null ? ImageSource.FromStream(() => image) : null)
+								.Bind<Image, PhotoViewModel, Stream?, ImageSource?>(Image.SourceProperty,
+									getter: static (PhotoViewModel vm) => vm.CapturedPhoto,
+									convert: static (Stream? image) => image is not null ? ImageSource.FromStream(() => image) : null)
 						}
 					}
 
@@ -59,9 +59,10 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 
 						new PhotoImage()
 							.Row(0)
-							.Bind(Image.SourceProperty,
-									static (PhotoViewModel vm) => vm.ThumbnailPhotoUri,
-									convert: static (Uri? imageUri) => imageUri is not null ? ImageSource.FromUri(imageUri) : null)
+							.Bind<Image, PhotoViewModel, Uri?, ImageSource?>(
+								Image.SourceProperty,
+								getter: static (PhotoViewModel vm) => vm.ThumbnailPhotoUri,
+								convert: static (Uri? imageUri) => imageUri is not null ? ImageSource.FromUri(imageUri) : null)
 					}
 				}.Row(Row.Photo).Column(Column.Thumbnail),
 
@@ -71,7 +72,10 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 					.Text("Upload Photo")
 					.BindCommand(static (PhotoViewModel vm) => vm.UploadPhotoCommand, mode: BindingMode.OneTime),
 
-				new ActivityIndicator { IsRunning = true }
+				new ActivityIndicator
+					{
+						IsRunning = true
+					}
 					.Row(Row.ActivityIndicator).ColumnSpan(All<Column>())
 					.Center()
 					.Bind(IsVisibleProperty, static (PhotoViewModel vm) => vm.IsCapturingAndUploadingPhoto),
@@ -89,7 +93,10 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 		public ImageBorder()
 		{
 			Stroke = new SolidColorBrush(Colors.Grey);
-			StrokeShape = new RoundRectangle { CornerRadius = 12 };
+			StrokeShape = new RoundRectangle
+			{
+				CornerRadius = 12
+			};
 			StrokeThickness = 2;
 			Padding = 12;
 		}
