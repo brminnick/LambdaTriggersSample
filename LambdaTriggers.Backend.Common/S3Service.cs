@@ -39,7 +39,7 @@ public static class S3Service
 			throw new HttpRequestException($"{nameof(IAmazonS3.PutObjectAsync)} Failed: {putObjectResponse.HttpStatusCode}");
 
 		logger.LogInformation($"Upload succeeded");
-		logger.LogInformation($"{nameof(putObjectResponse.ChecksumSHA256)}: {putObjectResponse.ChecksumSHA256}");
+		logger.LogInformation($"{nameof(putObjectResponse.ETag)}: {putObjectResponse.ETag}");
 
 		return new Uri(fileUrl);
 	}
