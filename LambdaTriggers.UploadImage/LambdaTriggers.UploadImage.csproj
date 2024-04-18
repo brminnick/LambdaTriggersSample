@@ -22,7 +22,7 @@
   -->
   <ItemGroup>
     <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="68.2.0.9" />
-    <PackageReference Include="HttpMultipartParser" Version="8.3.0" />
+    <PackageReference Include="HttpMultipartParser" Version="8.4.0" />
     <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="68.2.0.9" />
   </ItemGroup>
   <ItemGroup>
