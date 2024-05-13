@@ -26,11 +26,11 @@ public class MauiProgram
 		builder.Services.AddSingleton<PhotosApiService>();
 		builder.Services.AddRefitClient<IUploadPhotosAPI>()
 							.ConfigureHttpClient(static client => client.BaseAddress = new Uri(Constants.UploadPhotoApiUrl))
-							.AddStandardResilienceHandler(options => options.Retry = new MobileHttpRetryStrategyOptions() );
+							.AddStandardResilienceHandler(static options => options.Retry = new MobileHttpRetryStrategyOptions() );
 
 		builder.Services.AddRefitClient<IGetThumbnailApi>()
 							.ConfigureHttpClient(static client => client.BaseAddress = new Uri(Constants.GetThumbnailApiUrl))
-							.AddStandardResilienceHandler(options => options.Retry = new MobileHttpRetryStrategyOptions() );
+							.AddStandardResilienceHandler(static options => options.Retry = new MobileHttpRetryStrategyOptions() );
 
 		// Pages + View Models
 		builder.Services.AddTransient<PhotoPage, PhotoViewModel>();
