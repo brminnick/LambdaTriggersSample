@@ -40,8 +40,8 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 							new PhotoImage()
 								.Row(0)
 								.Bind<Image, PhotoViewModel, Stream?, ImageSource?>(Image.SourceProperty,
-									getter: static (PhotoViewModel vm) => vm.CapturedPhoto,
-									convert: static (Stream? image) => image is not null ? ImageSource.FromStream(() => image) : null)
+									getter: static vm => vm.CapturedPhoto,
+									convert: static image => image is not null ? ImageSource.FromStream(() => image) : null)
 						}
 					}
 
@@ -61,8 +61,8 @@ class PhotoPage : BaseContentPage<PhotoViewModel>
 							.Row(0)
 							.Bind<Image, PhotoViewModel, Uri?, ImageSource?>(
 								Image.SourceProperty,
-								getter: static (PhotoViewModel vm) => vm.ThumbnailPhotoUri,
-								convert: static (Uri? imageUri) => imageUri is not null ? ImageSource.FromUri(imageUri) : null)
+								getter: static vm => vm.ThumbnailPhotoUri,
+								convert: static imageUri => imageUri is not null ? ImageSource.FromUri(imageUri) : null)
 					}
 				}.Row(Row.Photo).Column(Column.Thumbnail),
 
