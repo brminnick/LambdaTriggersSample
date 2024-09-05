@@ -10,7 +10,7 @@ on:
 
 jobs:
   Build_Android:
-    runs-on: macos-11
+    runs-on: macos-14
 
     steps:
       - uses: actions/checkout@v1
@@ -33,7 +33,7 @@ jobs:
           dotnet build ./LambdaTriggers.Mobile/LambdaTriggers.Mobile.csproj -f net8.0-android
 
   Build_iOS:
-    runs-on: macos-13
+    runs-on: macos-14
 
     steps:
       - uses: actions/checkout@v1
@@ -61,7 +61,7 @@ jobs:
           dotnet build ./LambdaTriggers.Mobile/LambdaTriggers.Mobile.csproj -f net8.0-ios
           
   Build_MacCatalyst:
-    runs-on: macos-13
+    runs-on: macos-14
 
     steps:
       - uses: actions/checkout@v1
