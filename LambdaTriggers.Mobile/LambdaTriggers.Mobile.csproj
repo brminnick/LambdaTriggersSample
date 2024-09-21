@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(NetVersion)-android;$(NetVersion)-ios;$(NetVersion)-maccatalyst</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);$(NetVersion)-windows10.0.19041.38</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);$(NetVersion)-windows10.0.20348.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <RootNamespace>LambdaTriggers.Mobile</RootNamespace>
     <UseMaui>true</UseMaui>
