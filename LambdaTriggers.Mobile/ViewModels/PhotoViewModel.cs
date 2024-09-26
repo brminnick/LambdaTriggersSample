@@ -1,12 +1,11 @@
 ﻿namespace LambdaTriggers.Mobile;
 
-partial class PhotoViewModel : BaseViewModel
+partial class PhotoViewModel(IDispatcher dispatcher, IMediaPicker mediaPicker, PhotosApiService photosApiService) : BaseViewModel
 {
 	readonly WeakEventManager _eventManager = new();
-
-	readonly IDispatcher _dispatcher;
-	readonly IMediaPicker _mediaPicker;
-	readonly PhotosApiService _photosApiService;
+	readonly IDispatcher _dispatcher = dispatcher;
+	readonly IMediaPicker _mediaPicker = mediaPicker;
+	readonly PhotosApiService _photosApiService = photosApiService;
 
 	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(UploadPhotoCommand))]
 	bool _isCapturingAndUploadingPhoto;
@@ -16,13 +15,6 @@ partial class PhotoViewModel : BaseViewModel
 
 	[ObservableProperty]
 	Uri? _thumbnailPhotoUri;
-
-	public PhotoViewModel(IDispatcher dispatcher, IMediaPicker mediaPicker, PhotosApiService photosApiService)
-	{
-		_dispatcher = dispatcher;
-		_mediaPicker = mediaPicker;
-		_photosApiService = photosApiService;
-	}
 
 	public event EventHandler<string> Error
 	{

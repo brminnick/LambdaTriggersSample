@@ -2,13 +2,10 @@
 
 namespace LambdaTriggers.Mobile;
 
-class PhotosApiService
+class PhotosApiService(IUploadPhotosAPI uploadPhotosApiClient, IGetThumbnailApi getThumbnailApiClient)
 {
-	readonly IUploadPhotosAPI _uploadPhotosApiClient;
-	readonly IGetThumbnailApi _getThumbnailApiClient;
-
-	public PhotosApiService(IUploadPhotosAPI uploadPhotosApiClient, IGetThumbnailApi getThumbnailApiClient) =>
-		(_uploadPhotosApiClient, _getThumbnailApiClient) = (uploadPhotosApiClient, getThumbnailApiClient);
+	readonly IUploadPhotosAPI _uploadPhotosApiClient = uploadPhotosApiClient;
+	readonly IGetThumbnailApi _getThumbnailApiClient = getThumbnailApiClient;
 
 	public async Task<Uri> UploadPhoto(string photoTitle, FileResult photoMediaFile, CancellationToken token)
 	{

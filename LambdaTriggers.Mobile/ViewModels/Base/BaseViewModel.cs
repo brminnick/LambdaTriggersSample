@@ -1,5 +1,5 @@
 ﻿namespace LambdaTriggers.Mobile;
 
-abstract partial class BaseViewModel : ObservableObject
+abstract class BaseViewModel : ObservableObject
 {
 }

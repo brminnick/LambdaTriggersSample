@@ -8,7 +8,7 @@ using Refit;
 
 namespace LambdaTriggers.Mobile;
 
-public class MauiProgram
+public static class MauiProgram
 {
 	public static MauiApp CreateMauiApp()
 	{
