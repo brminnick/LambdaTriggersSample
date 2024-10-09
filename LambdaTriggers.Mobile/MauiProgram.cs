@@ -24,12 +24,8 @@ public static class MauiProgram
 		builder.Services.AddSingleton<App>();
 		builder.Services.AddSingleton(MediaPicker.Default);
 		builder.Services.AddSingleton<PhotosApiService>();
-		builder.Services.AddRefitClient<IUploadPhotosAPI>()
-							.ConfigureHttpClient(static client => client.BaseAddress = new Uri(Constants.UploadPhotoApiUrl))
-							.AddStandardResilienceHandler(static options => options.Retry = new MobileHttpRetryStrategyOptions() );
-
-		builder.Services.AddRefitClient<IGetThumbnailApi>()
-							.ConfigureHttpClient(static client => client.BaseAddress = new Uri(Constants.GetThumbnailApiUrl))
+		builder.Services.AddRefitClient<IHttpTriggerApi>()
+							.ConfigureHttpClient(static client => client.BaseAddress = new Uri(Constants.LambdaApiUrl))
 							.AddStandardResilienceHandler(static options => options.Retry = new MobileHttpRetryStrategyOptions() );
 
 		// Pages + View Models
@@ -46,7 +42,7 @@ public static class MauiProgram
 			MaxRetryAttempts = 25;
 			UseJitter = true;
 			Delay = TimeSpan.FromMilliseconds(200);
-			ShouldHandle = args => args.Outcome switch
+			ShouldHandle = static args => args.Outcome switch
 			{
 				{ Exception: ApiException } => PredicateResult.True(),
 				{ Exception: HttpRequestException } => PredicateResult.True(),

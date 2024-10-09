@@ -1,0 +1,8 @@
+
+{
+    "region" : "us-west-1",
+    "profile" : "Visual Studio Toolkit",
+    "s3-bucket" : "lambdatriggersbucket",
+    "template"  : "serverless.template",
+    "stack-name" : "LambdaTriggers"
+}

@@ -1,21 +1,20 @@
-using System.Net;
+﻿using System.Net;
 using Amazon.Lambda.Core;
-using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.S3Events;
-using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.S3;
 using LambdaTriggers.Backend.Common;
 using LambdaTriggers.Common;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
-namespace LambdaTriggers.GenerateThumbnail;
-
-public sealed class GenerateThumbnail : IDisposable
+namespace LambdaTriggers.Backend;
+public sealed class GenerateThumbnail(IAmazonS3 s3Client, S3Service s3Service) : IDisposable
 {
-	static readonly IAmazonS3 _s3Client = new AmazonS3Client();
+	readonly IAmazonS3 _s3Client = s3Client;
+	readonly S3Service _s3Service = s3Service;
 
-	public static async Task FunctionHandler(S3Event evnt, ILambdaContext context)
+	[Amazon.Lambda.Annotations.LambdaFunction]
+	public async Task FunctionHandler(S3Event evnt, ILambdaContext context)
 	{
 		var s3Event = evnt.Records?[0].S3;
 		if (s3Event is null || s3Event.Object.Key.EndsWith(Constants.ThumbnailSuffix))
@@ -35,9 +34,9 @@ public sealed class GenerateThumbnail : IDisposable
 
 			using var thumbnail = await CreatePNGThumbnail(imageMemoryStream).ConfigureAwait(false);
 
-			var thumbnailName = S3Service.GenerateThumbnailFilename(s3Event.Object.Key);
+			var thumbnailName = _s3Service.GenerateThumbnailFilename(s3Event.Object.Key);
 
-			await S3Service.UploadContentToS3(_s3Client, s3Event.Bucket.Name, thumbnailName, thumbnail, context.Logger).ConfigureAwait(false);
+			await _s3Service.UploadContentToS3(_s3Client, s3Event.Bucket.Name, thumbnailName, thumbnail, context.Logger).ConfigureAwait(false);
 		}
 		catch (Exception e)
 		{
@@ -47,17 +46,12 @@ public sealed class GenerateThumbnail : IDisposable
 		}
 	}
 
-	public void Dispose()
-	{
-		_s3Client.Dispose();
-	}
-
 	static async Task<MemoryStream> CreatePNGThumbnail(Stream imageStream)
 	{
 		var resizeOptions = new ResizeOptions
 		{
 			Mode = ResizeMode.Max,
-			Size = new Size(200, 200)
+			Size = new(200, 200)
 		};
 
 		imageStream.Position = 0;
@@ -71,10 +65,8 @@ public sealed class GenerateThumbnail : IDisposable
 		return outputMemoryStream;
 	}
 
-	static async Task Main(string[] args)
+	public void Dispose()
 	{
-		await LambdaBootstrapBuilder.Create<S3Event>(FunctionHandler, new DefaultLambdaJsonSerializer())
-								.Build()
-								.RunAsync();
+		_s3Client.Dispose();
 	}
 }
