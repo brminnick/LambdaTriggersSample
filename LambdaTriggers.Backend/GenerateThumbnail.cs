@@ -1,16 +1,13 @@
-using System.Net;
+﻿using System.Net;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.S3Events;
-using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.S3;
 using LambdaTriggers.Backend.Common;
 using LambdaTriggers.Common;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
-[assembly: LambdaSerializer(typeof(DefaultLambdaJsonSerializer))]
-namespace LambdaTriggers.GenerateThumbnail;
-
+namespace LambdaTriggers.Backend;
 public sealed class GenerateThumbnail(IAmazonS3 s3Client, S3Service s3Service) : IDisposable
 {
 	readonly IAmazonS3 _s3Client = s3Client;
@@ -49,17 +46,12 @@ public sealed class GenerateThumbnail(IAmazonS3 s3Client, S3Service s3Service) :
 		}
 	}
 
-	public void Dispose()
-	{
-		_s3Client.Dispose();
-	}
-
 	static async Task<MemoryStream> CreatePNGThumbnail(Stream imageStream)
 	{
 		var resizeOptions = new ResizeOptions
 		{
 			Mode = ResizeMode.Max,
-			Size = new Size(200, 200)
+			Size = new(200, 200)
 		};
 
 		imageStream.Position = 0;
@@ -71,5 +63,10 @@ public sealed class GenerateThumbnail(IAmazonS3 s3Client, S3Service s3Service) :
 		await image.SaveAsPngAsync(outputMemoryStream).ConfigureAwait(false);
 
 		return outputMemoryStream;
+	}
+
+	public void Dispose()
+	{
+		_s3Client.Dispose();
 	}
 }

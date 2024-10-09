@@ -1,7 +1,11 @@
-﻿using LambdaTriggers.Backend.Common;
+﻿using Amazon.Lambda.Core;
+using Amazon.Lambda.Serialization.SystemTextJson;
+using LambdaTriggers.Backend.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LambdaTriggers.HttpTriggers;
+
+[assembly: LambdaSerializer(typeof(DefaultLambdaJsonSerializer))]
+namespace LambdaTriggers.Backend;
 
 [Amazon.Lambda.Annotations.LambdaStartup]
 public partial class StartupBase

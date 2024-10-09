@@ -3,7 +3,25 @@
   "Transform": "AWS::Serverless-2016-10-31",
   "Description": "This template is partially managed by Amazon.Lambda.Annotations (v1.5.2.0).",
   "Resources": {
-    "LambdaTriggersHttpTriggersUploadImageGetThumbnailHandlerGenerated": {
+    "LambdaTriggersBackendGenerateThumbnailFunctionHandlerGenerated": {
+      "Type": "AWS::Serverless::Function",
+      "Metadata": {
+        "Tool": "Amazon.Lambda.Annotations"
+      },
+      "Properties": {
+        "Runtime": "dotnet8",
+        "CodeUri": ".",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "Role": "arn:aws:iam::723361041013:role/lambda_exec_LambdaTriggers-0",
+        "Policies": [
+          "AWSLambdaBasicExecutionRole"
+        ],
+        "PackageType": "Zip",
+        "Handler": "LambdaTriggers.Backend::LambdaTriggers.Backend.GenerateThumbnail_FunctionHandler_Generated::FunctionHandler"
+      }
+    },
+    "LambdaTriggersHttpTriggersGetThumbnailGetThumbnailHandlerGenerated": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -22,11 +40,12 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
+        "Role": "arn:aws:iam::723361041013:role/lambda_exec_LambdaTriggers-0",
         "Policies": [
           "AWSLambdaBasicExecutionRole"
         ],
         "PackageType": "Zip",
-        "Handler": "LambdaTriggers.HttpTriggers::LambdaTriggers.HttpTriggers.UploadImage_GetThumbnailHandler_Generated::GetThumbnailHandler",
+        "Handler": "LambdaTriggers.Backend::LambdaTriggers.HttpTriggers.GetThumbnail_GetThumbnailHandler_Generated::GetThumbnailHandler",
         "Events": {
           "RootGet": {
             "Type": "HttpApi",
@@ -38,7 +57,7 @@
         }
       }
     },
-    "LambdaTriggersHttpTriggersUploadImageUploadImageHandlerGenerated": {
+    "LambdaTriggersBackendUploadImageUploadImageHandlerGenerated": {
       "Type": "AWS::Serverless::Function",
       "Metadata": {
         "Tool": "Amazon.Lambda.Annotations",
@@ -57,11 +76,12 @@
         "CodeUri": ".",
         "MemorySize": 512,
         "Timeout": 30,
+        "Role": "arn:aws:iam::723361041013:role/lambda_exec_LambdaTriggers-0",
         "Policies": [
           "AWSLambdaBasicExecutionRole"
         ],
         "PackageType": "Zip",
-        "Handler": "LambdaTriggers.HttpTriggers::LambdaTriggers.HttpTriggers.UploadImage_UploadImageHandler_Generated::UploadImageHandler",
+        "Handler": "LambdaTriggers.Backend::LambdaTriggers.Backend.UploadImage_UploadImageHandler_Generated::UploadImageHandler",
         "Events": {
           "RootPost": {
             "Type": "HttpApi",

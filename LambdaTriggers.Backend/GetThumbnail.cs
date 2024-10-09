@@ -1,25 +1,25 @@
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
-using Amazon.Lambda.Annotations;
 using Amazon.Lambda.Annotations.APIGateway;
+using Amazon.Lambda.Annotations;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
-using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.S3;
 using LambdaTriggers.Backend.Common;
 using LambdaTriggers.Common;
 
-[assembly: LambdaSerializer(typeof(DefaultLambdaJsonSerializer))]
-namespace LambdaTriggers.GetThumbnail;
+namespace LambdaTriggers.HttpTriggers;
 
-public sealed class GetThumbnailFunction(IAmazonS3 s3Client, S3Service s3Service) : IDisposable
+public sealed class GetThumbnail(IAmazonS3 s3Client, S3Service s3Service) : IDisposable
 {
 	readonly IAmazonS3 _s3Client = s3Client;
 	readonly S3Service _s3Service = s3Service;
 
 	[LambdaFunction]
-    [HttpApi(LambdaHttpMethod.Get, "/LambdaTriggers_GetThumbnail")]
-    public async Task<APIGatewayHttpApiV2ProxyResponse> FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
+	[HttpApi(LambdaHttpMethod.Get, "/LambdaTriggers_GetThumbnail")]
+	public async Task<APIGatewayHttpApiV2ProxyResponse> GetThumbnailHandler(
+		APIGatewayHttpApiV2ProxyRequest request,
+		ILambdaContext context)
 	{
 		if (request.QueryStringParameters is null
 			|| !request.QueryStringParameters.TryGetValue(Constants.ImageFileNameQueryParameter, out var filename)
