@@ -7,11 +7,11 @@ using LambdaTriggers.Common;
 
 namespace LambdaTriggers.Backend.Common;
 
-public static class S3Service
+public class S3Service
 {
 	public const string BucketName = "lambdatriggersbucket";
 
-	public static async Task<Uri> UploadContentToS3<T>(IAmazonS3 s3Client, string bucket, string key, T content, ILambdaLogger logger)
+	public async Task<Uri> UploadContentToS3<T>(IAmazonS3 s3Client, string bucket, string key, T content, ILambdaLogger logger)
 	{
 		var request = content switch
 		{
@@ -44,9 +44,9 @@ public static class S3Service
 		return new Uri(fileUrl);
 	}
 
-	public static string GenerateThumbnailFilename(in string fileName) => Path.GetFileNameWithoutExtension(fileName) + Constants.ThumbnailSuffix;
+	public string GenerateThumbnailFilename(in string fileName) => Path.GetFileNameWithoutExtension(fileName) + Constants.ThumbnailSuffix;
 
-	public static async Task<Uri?> GetFileUri(IAmazonS3 s3Client, string bucket, string key, ILambdaLogger lambdaLogger, DateTime? expirationDate = default)
+	public async Task<Uri?> GetFileUri(IAmazonS3 s3Client, string bucket, string key, ILambdaLogger lambdaLogger, DateTime? expirationDate = default)
 	{
 		expirationDate ??= DateTime.UtcNow.AddMinutes(1);
 

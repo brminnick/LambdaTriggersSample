@@ -24,5 +24,8 @@
     "tracing-mode"             : "PassThrough",
     "environment-variables"    : "",
     "image-tag"                : "",
-    "function-description"     : ""
+    "function-description"     : "",
+    "s3-bucket"                : "lambdatriggersbucket",
+    "template"                 : "serverless.template",
+    "stack-name"               : "HelloVisualStudioToolkit"
 }

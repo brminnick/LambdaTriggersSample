@@ -1,33 +1,33 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <AWSProjectType>Lambda</AWSProjectType>
-    <AssemblyName>bootstrap</AssemblyName>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+
     <!-- This property makes the build directory similar to a publish directory and helps the AWS .NET Lambda Mock Test Tool find project dependencies. -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <!-- 
-		Enable trimming to reduce package size of self contained publish which can reduce cold starts. Trimming alters
-		the .NET assemblies put in the deployment package. Additional runtime testing is required to make sure trimming
-		does not have any unattended consequences.
-    
-	<PublishTrimmed>true</PublishTrimmed>
-	-->
+
     <!-- Generate ready to run images during publishing to improve cold start time. -->
     <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
-  <!-- 
-  Amazon Linux 2023 does not have libicu a system library for internationalization preinstalled. When publishing to the provided.al2023 runtime Microsoft.ICU.ICU4C.Runtime
-  package need to be included to support internationalization.
-  -->
+
+  <!-- Amazon Linux 2023 does not have libicu a system library for internationalization preinstalled. When publishing to the provided.al2023 runtime Microsoft.ICU.ICU4C.Runtime package need to be included to support internationalization.  -->
   <ItemGroup>
     <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="68.2.0.9" />
     <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="68.2.0.9" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\LambdaTriggers.Backend.Common\LambdaTriggers.Backend.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 </Project>
