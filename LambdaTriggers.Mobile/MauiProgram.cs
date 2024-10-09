@@ -25,7 +25,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton(MediaPicker.Default);
 		builder.Services.AddSingleton<PhotosApiService>();
 		builder.Services.AddRefitClient<IHttpTriggerApi>()
-							.ConfigureHttpClient(static client => client.BaseAddress = new Uri(Constants.HttpTriggerApiUrl))
+							.ConfigureHttpClient(static client => client.BaseAddress = new Uri(Constants.LambdaApiUrl))
 							.AddStandardResilienceHandler(static options => options.Retry = new MobileHttpRetryStrategyOptions() );
 
 		// Pages + View Models
