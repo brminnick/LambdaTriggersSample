@@ -88,7 +88,7 @@ partial class PhotoPage : BaseContentPage<PhotoViewModel>
 
 	async void HandleError(object? sender, string message) => await Dispatcher.DispatchAsync(() => DisplayAlert("Error", message, "OK"));
 
-	sealed class ImageBorder : Border
+	sealed partial class ImageBorder : Border
 	{
 		public ImageBorder()
 		{
@@ -102,7 +102,7 @@ partial class PhotoPage : BaseContentPage<PhotoViewModel>
 		}
 	}
 
-	sealed class PhotoImage : Image
+	sealed partial class PhotoImage : Image
 	{
 		public PhotoImage()
 		{
