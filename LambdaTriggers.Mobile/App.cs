@@ -1,9 +1,8 @@
 ﻿namespace LambdaTriggers.Mobile;
 
-class App : Application
+class App(AppShell shell) : Application
 {
-	public App(AppShell shell)
-	{
-		MainPage = shell;
-	}
+	readonly AppShell _appShell = shell;
+
+	protected override Window CreateWindow(IActivationState? activationState) => new(_appShell);
 }
