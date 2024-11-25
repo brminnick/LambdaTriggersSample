@@ -7,20 +7,20 @@ partial class PhotoViewModel(IDispatcher dispatcher, IMediaPicker mediaPicker, P
 	readonly IMediaPicker _mediaPicker = mediaPicker;
 	readonly PhotosApiService _photosApiService = photosApiService;
 
-	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(UploadPhotoCommand))]
-	bool _isCapturingAndUploadingPhoto;
-
-	[ObservableProperty]
-	Stream? _capturedPhoto;
-
-	[ObservableProperty]
-	Uri? _thumbnailPhotoUri;
-
 	public event EventHandler<string> Error
 	{
 		add => _eventManager.AddEventHandler(value);
 		remove => _eventManager.RemoveEventHandler(value);
 	}
+
+	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(UploadPhotoCommand))]
+	public partial bool IsCapturingAndUploadingPhoto { get; private set; }
+
+	[ObservableProperty]
+	public partial Stream? CapturedPhoto { get; private set; }
+
+	[ObservableProperty]
+	public partial Uri? ThumbnailPhotoUri { get; private set; }
 
 	bool CanUploadPhotoExecute => !IsCapturingAndUploadingPhoto;
 

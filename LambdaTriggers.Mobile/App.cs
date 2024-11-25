@@ -1,6 +1,6 @@
 ﻿namespace LambdaTriggers.Mobile;
 
-class App(AppShell shell) : Application
+partial class App(AppShell shell) : Application
 {
 	readonly AppShell _appShell = shell;
 

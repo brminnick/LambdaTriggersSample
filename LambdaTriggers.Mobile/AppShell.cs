@@ -1,6 +1,6 @@
 ﻿namespace LambdaTriggers.Mobile;
 
-class AppShell : Shell
+partial class AppShell : Shell
 {
 	public AppShell(PhotoPage photoPage)
 	{

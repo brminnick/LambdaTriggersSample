@@ -4,7 +4,7 @@ using static CommunityToolkit.Maui.Markup.GridRowsColumns;
 
 namespace LambdaTriggers.Mobile;
 
-class PhotoPage : BaseContentPage<PhotoViewModel>
+partial class PhotoPage : BaseContentPage<PhotoViewModel>
 {
 	public PhotoPage(PhotoViewModel photoViewModel) : base(photoViewModel, "Photo Page")
 	{
