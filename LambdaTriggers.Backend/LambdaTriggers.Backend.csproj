@@ -16,7 +16,7 @@
   <!-- Amazon Linux 2023 does not have libicu a system library for internationalization preinstalled. When publishing to the provided.al2023 runtime Microsoft.ICU.ICU4C.Runtime package need to be included to support internationalization.  -->
   <ItemGroup>
     <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="68.2.0.9" />
-    <PackageReference Include="HttpMultipartParser" Version="8.4.0" />
+    <PackageReference Include="HttpMultipartParser" Version="9.0.0" />
     <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="68.2.0.9" />
   </ItemGroup>
 
